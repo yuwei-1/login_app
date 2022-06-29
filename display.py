@@ -4,12 +4,14 @@ from tkinter.ttk import *
 
 class LoginPage:
 
-    def __init__(self, title, window,  button = None, user = None, pw = None):
+    def __init__(self, title, window,  button = None, user = None, pw = None, newuser = None, newpw = None):
         self.title = title
         self.button = button
         self.window = window
         self.user = user
         self.pw = pw
+        self.newuser = newuser
+        self.newpw = newpw
 
     def create_page(self):
 
@@ -19,7 +21,7 @@ class LoginPage:
         self.create_label(self.window, self.title)
         username = self.create_field(self.window, "Username:", 0.25, 15)
         password = self.create_field(self.window, "Password:", 0.35, 15)
-        self.create_button(self.window, lambda: self.get_login_details(username, password, self.window))
+        self.create_button(self.window, lambda: self.get_login_details(username, password))
 
         style = Style()
         style.configure('W.TButton', font = ('calibri', 10, 'bold', 'underline'), foreground='red')
@@ -30,10 +32,16 @@ class LoginPage:
         e = Button(self.window, text = "Register", style = "W.TButton", command = lambda: self.register())
         e.place(relx=0.42, rely=0.45)
 
-    def get_login_details(self, username, password, window):
+    def get_login_details(self, username, password):
 
         self.user = username.get()
         self.pw = password.get()
+
+    def get_new_login(self, newuser, newpw, confirmpw):
+
+        self.newuser = newuser.get()
+        self.newpw = newpw.get()
+        self.confirmpw = confirmpw.get()
 
     def invalid_login(self):
 
@@ -49,10 +57,12 @@ class LoginPage:
         reg.geometry("500x500+500+200")
         reg.title("Register Page")
         self.create_label(reg, "Register")
-        self.create_field(reg, "new username: ", 0.25, 10)
-        self.create_field(reg, "new password: ", 0.35, 10)
-        self.create_field(reg, "confirm password: ", 0.45, 10)
-        Button(reg, text="Back", command=reg.destroy).place(relx=0.5, rely=0.75, anchor=CENTER)
+        new_user = self.create_field(reg, "new username: ", 0.25, 10)
+        new_pass = self.create_field(reg, "new password: ", 0.35, 10)
+        confirm_new_pass = self.create_field(reg, "confirm password: ", 0.45, 10)
+
+        Button(reg, text="Back", command=lambda: reg.destroy()).place(relx=0.5, rely=0.75, anchor=CENTER)
+        Button(reg, text="Register", command=lambda: self.get_new_login(new_user, new_pass, confirm_new_pass)).place(relx=0.5, rely=0.65, anchor=CENTER)
 
     def create_label(self, win, title):
 
@@ -69,7 +79,11 @@ class LoginPage:
         label = Label(win, text = name, font=("Times 20 italic bold", textsize))
         label.place(relx=0.25, rely=ypos)
 
-        e = Entry(win)
+        if "password" in name.lower():
+            e = Entry(win, show = "*")
+        else:
+            e = Entry(win)
+
         e.place(relx=0.5, rely=ypos)
 
         return e
