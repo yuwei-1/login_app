@@ -90,7 +90,7 @@ class LoginPage:
         label.place(relx=0.25, rely=ypos)
 
         if "password" in name.lower():
-            e = Entry(win, show = "*")
+            e = Entry(win, show = "●")
         else:
             e = Entry(win)
 
