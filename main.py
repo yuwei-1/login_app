@@ -14,17 +14,13 @@ if __name__ == "__main__":
     while True:
 
         if p1.user:
-            print(p1.user)
-            print(p1.pw)
-
             q1 = DatabaseQueries()
-            if q1.check_details(p1.user, p1.pw):
 
-                print("Login Successful")
+            if q1.check_details(p1.user, p1.pw):
+                p1.successful_login()
 
             else:
-
-                print("Invalid Login")
+                p1.invalid_login()
 
             p1.user = None
             p1.pw = None
@@ -34,9 +30,20 @@ if __name__ == "__main__":
             if p1.confirmpw == p1.newpw:
 
                 q1 = DatabaseQueries()
-                q1.create_new(p1.newuser, p1.newpw)
+                exists = q1.create_new(p1.newuser, p1.newpw)
+
+                if not exists:
+                    p1.reg.destroy()
+                    p1.display_message(window, "Registration was Successful")
+                else:
+                    p1.display_message(p1.reg, "This Account already exists")
 
             p1.newuser = None
 
-        window.update_idletasks()
-        window.update()
+        try:
+            window.update_idletasks()
+            window.update()
+
+        except:
+            break
+

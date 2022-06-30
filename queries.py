@@ -20,11 +20,13 @@ class DatabaseQueries:
 
         if records:
 
-            return False
+            return True
 
         cursor.execute("INSERT INTO login_details (Username, Password) VALUES (?, ?)", (new_user, new_pw))
         con.commit()
         con.close()
+
+        return False
 
     def check_details(self, user, pw) -> bool:
 
@@ -35,7 +37,9 @@ class DatabaseQueries:
         con.commit()
         con.close()
 
-        if records[0][0] == pw:
-            return True
+        if records:
+
+            if records[0][0] == pw:
+                return True
 
         return False

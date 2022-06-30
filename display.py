@@ -4,7 +4,7 @@ from tkinter.ttk import *
 
 class LoginPage:
 
-    def __init__(self, title, window,  button = None, user = None, pw = None, newuser = None, newpw = None):
+    def __init__(self, title, window,  button = None, user = None, pw = None, newuser = None, newpw = None, reg = None):
         self.title = title
         self.button = button
         self.window = window
@@ -12,6 +12,7 @@ class LoginPage:
         self.pw = pw
         self.newuser = newuser
         self.newpw = newpw
+        self.reg = reg
 
     def create_page(self):
 
@@ -51,22 +52,31 @@ class LoginPage:
         self.create_label(err, "Invalid Login")
         Button(err, text = "ok", command = err.destroy).place(relx=0.5, rely=0.75, anchor = CENTER)
 
+    def successful_login(self):
+
+        success = Toplevel(self.window)
+        success.geometry("200x200+700+400")
+        success.title("Login Successful")
+        self.create_label(success, "Login Successful")
+        Button(success, text = "ok", command = success.destroy).place(relx=0.5, rely=0.75, anchor = CENTER)
+
     def register(self):
 
         reg = Toplevel(self.window)
+
+        self.reg = reg
         reg.geometry("500x500+500+200")
         reg.title("Register Page")
         self.create_label(reg, "Register")
         new_user = self.create_field(reg, "new username: ", 0.25, 10)
         new_pass = self.create_field(reg, "new password: ", 0.35, 10)
         confirm_new_pass = self.create_field(reg, "confirm password: ", 0.45, 10)
-
         Button(reg, text="Back", command=lambda: reg.destroy()).place(relx=0.5, rely=0.75, anchor=CENTER)
         Button(reg, text="Register", command=lambda: self.get_new_login(new_user, new_pass, confirm_new_pass)).place(relx=0.5, rely=0.65, anchor=CENTER)
 
     def create_label(self, win, title):
 
-        l1 = Label(win, text=title, font=("Times 20 italic bold", 20))
+        l1 = Label(win, text=title, font=("Times 20 italic bold", 16))
         l1.pack()
 
     def create_button(self, win, command):
@@ -88,4 +98,7 @@ class LoginPage:
 
         return e
 
+    def display_message(self, win, msg):
 
+        l2 = Label(win, text = msg)
+        l2.place(relx = 0.35, rely=0.55)
