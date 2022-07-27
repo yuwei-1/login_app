@@ -11,7 +11,8 @@ class DatabaseQueries:
         con.commit()
         con.close()
 
-    def check_new(self, new_user, new_email):
+    @staticmethod
+    def check_new(new_user, new_email):
 
         con = sqlite3.connect("loginapp.db")
         cursor = con.cursor()
@@ -28,15 +29,18 @@ class DatabaseQueries:
 
         return False
 
-    def create_new(self, new_user, new_pw, new_email):
+    @staticmethod
+    def create_new(new_user, new_pw, new_email):
 
         con = sqlite3.connect("loginapp.db")
         cursor = con.cursor()
-        cursor.execute("INSERT INTO login_details (Username, Password, Email) VALUES (?, ?, ?)", (new_user, new_pw, new_email))
+        cursor.execute("INSERT INTO login_details (Username, Password, Email) VALUES (?, ?, ?)",
+                       (new_user, new_pw, new_email))
         con.commit()
         con.close()
 
-    def check_details(self, user, pw) -> bool:
+    @staticmethod
+    def check_details(user, pw):
 
         con = sqlite3.connect("loginapp.db")
         cursor = con.cursor()
@@ -52,6 +56,6 @@ class DatabaseQueries:
         if pw_records:
 
             if pw_records[0][0] == pw:
-                return email_records
+                return email_records[0][0]
 
         return False
