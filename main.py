@@ -43,7 +43,7 @@ if __name__ == "__main__":
                     if p1.code:
 
                         if p1.code == correct_code:
-                            p1.successful_login()
+                            p1.display_message(window, "Successful Login")
                             login_success = (p1.user, receiver_email)
                         else:
                             p1.display_message(window, "Your code is incorrect.")
