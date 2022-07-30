@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import *
 from tkinter.ttk import *
-from PIL import ImageTk, Image
+from PIL import ImageTk
 
 
 class LoginPage:
@@ -26,22 +26,24 @@ class LoginPage:
         self.window.geometry("500x500+500+200")
 
         self.create_label(self.window, self.title, 30)
-        username = self.create_field(self.window, "Username:", 0.4, 15)
-        password = self.create_field(self.window, "Password:", 0.5, 15)
+        username = self.create_field(self.window, "Username:", 0.43, 0.4, 10)
+        password = self.create_field(self.window, "Password:", 0.43, 0.5, 10)
 
         self.create_button(self.window, lambda: self.get_login_details(username, password))
         self.create_register(self.window)
 
     def create_register(self, window):
 
-        style = Style()
-        style.configure('W.TButton', font=('calibri', 10, 'bold', 'underline'), foreground='red')
+        frame = tk.Frame(window)
 
-        label = Label(window, text="Not a user?", font=("calibri", 10))
-        label.place(relx=0.5, rely=0.57, anchor=E)
+        label = Label(frame, text="Not a user?", font=("helvetica", 8))
+        label.grid(column=0, row=0)
 
-        e = tk.Button(window, text="Register", command=lambda: self.register(), borderwidth=0, highlightthickness=0, font=('calibri', 10, 'bold', 'underline'), foreground='blue')
-        e.place(relx=0.5, rely=0.57, anchor=W)
+        e = tk.Button(frame, text="Register", command=lambda: self.register(), borderwidth=0,
+                      highlightthickness=0, font=('helvetica', 8, 'underline'), foreground='blue')
+        e.grid(column=1, row=0)
+
+        frame.place(relx=0.295, rely=0.55, anchor=NW)
 
     def create_email_authenticator(self):
 
@@ -51,7 +53,7 @@ class LoginPage:
         authenticator.geometry("400x400+550+250")
         authenticator.title("Email Authenticator")
         self.create_label(authenticator, "A 6-Digit code has been sent\nto the email you used for registration.", 10)
-        code = self.create_field(authenticator, "Code:", 0.4, 15)
+        code = self.create_field(authenticator, "Code:", 0.4, 0.4, 10)
         Button(authenticator, text="Verify",
                command=lambda: self.get_code(code)).place(relx=0.5, rely=0.75, anchor=CENTER)
 
@@ -80,18 +82,22 @@ class LoginPage:
         reg.title("Register Page")
         self.create_label(reg, "Register", 30)
 
-        new_user = self.create_field(reg, "New username: ", 0.27, 10)
-        new_pass = self.create_field(reg, "New password: ", 0.34, 10)
-        confirm_new_pass = self.create_field(reg, "Confirm password: ", 0.41, 10)
-        email_address = self.create_field(reg, "Email address: ", 0.48, 10)
+        new_user = self.create_field(reg, "New username: ", 0.5, 0.27, 10)
+        new_pass = self.create_field(reg, "New password: ", 0.5, 0.34, 10)
+        confirm_new_pass = self.create_field(reg, "Confirm password: ", 0.5, 0.41, 10)
+        email_address = self.create_field(reg, "Email address: ", 0.5, 0.48, 10)
 
-        Button(reg, text="Back", command=lambda: reg.destroy()).place(relx=0.5, rely=0.75, anchor=CENTER)
-        Button(reg, text="Register", command=lambda: self.get_new_login(
-            new_user, new_pass, confirm_new_pass, email_address)).place(relx=0.5, rely=0.65, anchor=CENTER)
+        b1 = Button(reg, text="Back", command=lambda: reg.destroy())
+        b2 = Button(reg, text="Register", command=lambda: self.get_new_login(
+            new_user, new_pass, confirm_new_pass, email_address))
+
+        b1.place(relx=0.5, rely=0.8, anchor=CENTER)
+        b2.place(relx=0.5, rely=0.7, anchor=CENTER)
 
     @staticmethod
     def create_label(win, title, text_size):
-        l1 = tk.Label(win, text=title, font=("calibri", text_size), borderwidth=1, highlightthickness=1, relief='solid', background='white')
+        l1 = tk.Label(win, text=title, font=("helvetica", text_size),
+                      borderwidth=1, highlightthickness=1, relief='solid', background='black', foreground='white')
         l1.place(relx=0.5, rely=0.1, anchor=CENTER)
 
     def create_button(self, win, command):
@@ -100,23 +106,38 @@ class LoginPage:
         b.place(relx=0.5, rely=0.75, anchor=CENTER)
 
     @staticmethod
-    def create_field(win, name, y_pos, text_size):
+    def create_field(win, name, x_pos, y_pos, text_size):
 
-        label = Label(win, text=name, font=("calibri", text_size))
-        label.place(relx=0.495, rely=y_pos, anchor=E)
+        label = Label(win, text=name, font=("helvetica", text_size))
+        label.place(relx=x_pos - 0.005, rely=y_pos, anchor=E)
 
         if "password" in name.lower():
-            e = Entry(win, show="●")
+            e = tk.Entry(win, show="●", borderwidth=1, relief='solid')
         else:
-            e = Entry(win)
-        e.place(relx=0.505, rely=y_pos, anchor=W)
+            e = tk.Entry(win, borderwidth=1, relief='solid')
+
+        e.place(relx=x_pos + 0.005, rely=y_pos, anchor=W)
         return e
 
     @staticmethod
     def display_message(win, msg):
 
-        l2 = Label(win, text=msg)
-        l2.place(relx=0.35, rely=0.55)
+        frame = tk.Frame(win)
+        l2 = tk.Label(frame, text=msg, width = 200)
+        l2.grid(column=0, row=0)
+
+        frame.place(relx=0.5, rely=0.63, anchor=CENTER)
+
+    @staticmethod
+    def check_password(pw):
+
+        if len(pw) < 8:
+            return False
+        if pw.lower() == pw:
+            return False
+        if not any(not s.isalnum() for s in pw):
+            return False
+        return True
 
 
 class LandingPage(LoginPage):
@@ -143,8 +164,8 @@ class LandingPage(LoginPage):
 
     def display_user_data(self):
 
-        l1 = Label(self.window, text=self.user, font=("Times 20 italic bold", 10))
-        l2 = Label(self.window, text=self.email, font=("Times 20 italic bold", 10))
+        l1 = Label(self.window, text=self.user, font=("helvetica", 10))
+        l2 = Label(self.window, text=self.email, font=("helvetica", 10))
 
         l1.place(relx=0.85, rely=0)
         l2.place(relx=0.85, rely=0.03)

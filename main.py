@@ -26,7 +26,18 @@ if __name__ == "__main__":
 
             login_success = False
 
-        if p1.user:
+        if p1.user or p1.pw:
+
+            if p1.user and not p1.pw:
+                p1.display_message(window, "Please enter your password")
+                p1.pw, p1.user = None, None
+                continue
+
+            elif p1.pw and not p1.user:
+                p1.display_message(window, "Please enter your username")
+                p1.pw, p1.user = None, None
+                continue
+
             q1 = DatabaseQueries()
             receiver_email = q1.check_details(p1.user, p1.pw)
 
@@ -60,16 +71,27 @@ if __name__ == "__main__":
                         break
 
             else:
-                p1.display_message(window, "         Invalid Login")
+                p1.display_message(window, "Invalid Login")
 
             p1.user = None
             p1.pw = None
 
-        if p1.new_user:
+        if p1.new_user or p1.new_pw or p1.email or p1.confirm_pw:
+
+            if not (p1.new_pw and p1.new_user and p1.confirm_pw and p1.email):
+
+                p1.display_message(p1.reg, "Please enter all registration details")
+                p1.new_user = None
+                p1.new_pw = None
+                p1.email = None
+                p1.confirm_pw = None
+                continue
 
             e1 = EmailHandler(receiver_email=p1.email)
 
-            if p1.confirm_pw == p1.new_pw:
+            secure_pw = p1.check_password(p1.new_pw)
+
+            if p1.confirm_pw == p1.new_pw and secure_pw:
 
                 q1 = DatabaseQueries()
                 exists = q1.check_new(p1.new_user, p1.email)
@@ -86,13 +108,19 @@ if __name__ == "__main__":
                 elif exists == 1:
                     p1.display_message(p1.reg, "This Username already exists")
                 elif exists == 2:
-                    p1.display_message(p1.reg, "This email already exists")
+                    p1.display_message(p1.reg, "This email is already taken")
 
+            elif p1.new_pw == p1.confirm_pw and not secure_pw:
+                p1.display_message(p1.reg, "Password should contain 8 characters, a special character and a capital letter")
             else:
 
                 p1.display_message(p1.reg, "The passwords do not match")
 
+
             p1.new_user = None
+            p1.new_pw = None
+            p1.email = None
+            p1.confirm_pw = None
 
         try:
             window.update_idletasks()
