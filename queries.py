@@ -1,4 +1,5 @@
 import sqlite3
+from SHA2 import SHA2
 
 
 class DatabaseQueries:
@@ -34,8 +35,11 @@ class DatabaseQueries:
 
         con = sqlite3.connect("loginapp.db")
         cursor = con.cursor()
+
+        sha2 = SHA2(new_pw)
+        encrypted_pw = sha2.encrypt()
         cursor.execute("INSERT INTO login_details (Username, Password, Email) VALUES (?, ?, ?)",
-                       (new_user, new_pw, new_email))
+                       (new_user, encrypted_pw, new_email))
         con.commit()
         con.close()
 
@@ -44,6 +48,9 @@ class DatabaseQueries:
 
         con = sqlite3.connect("loginapp.db")
         cursor = con.cursor()
+
+        sha2 = SHA2(pw)
+        encrypted_pw = sha2.encrypt()
 
         cursor.execute("SELECT Password FROM login_details WHERE Username = ?", (user,))
         pw_records = cursor.fetchall()
@@ -55,7 +62,7 @@ class DatabaseQueries:
 
         if pw_records:
 
-            if pw_records[0][0] == pw:
+            if pw_records[0][0] == encrypted_pw:
                 return email_records[0][0]
 
         return False
